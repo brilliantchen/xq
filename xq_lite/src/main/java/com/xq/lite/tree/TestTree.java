@@ -14,13 +14,13 @@ public class TestTree {
 		tree.insert(22, "22");
 		tree.insert(10, "10");
 		tree.insert(4, "4");
-		tree.printTree(tree.getNode());
-		/*System.out.println("先序------------------");
-		tree.preViewTree(tree.getNode());
-		System.out.println("中序------------------");
-		tree.orderViewTree(tree.getNode());
-		System.out.println("后序------------------");
-		tree.postViewTree(tree.getNode());*/
+		//tree.printTree(tree.getNode());
+		//System.out.println("先序------------------");
+		//tree.preViewTree(tree.getNode());
+		//System.out.println("中序------------------");
+		//tree.orderViewTree(tree.getNode());
+		//System.out.println("后序------------------");
+		//tree.postViewTree(tree.getNode());
 	}
 
 }

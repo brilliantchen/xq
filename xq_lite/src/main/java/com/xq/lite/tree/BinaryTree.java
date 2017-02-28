@@ -93,7 +93,7 @@ public class BinaryTree<T> {
 	public void printTree(TreeNode<T> root){
         if(root == null)
             return;
-        Queue<TreeNode<T>> queue = new LinkedList<>();
+        Queue<TreeNode<T>> queue = new LinkedList<TreeNode<T>>();
         
         int current;//当前层 还未打印的结点个数
         int next;//下一层结点个数
