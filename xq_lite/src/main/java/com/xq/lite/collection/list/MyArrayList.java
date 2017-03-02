@@ -44,6 +44,7 @@ public class MyArrayList<E> {
 				+ Arrays.toString(elementData) + "]";
 	}
 
+	
 
 	public int getSize() {
 		return size;

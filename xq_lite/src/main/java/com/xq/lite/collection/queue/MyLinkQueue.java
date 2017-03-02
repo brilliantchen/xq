@@ -69,16 +69,25 @@ public class MyLinkQueue<E> implements IXqQueue<E>{
 	@Override
 	public void clear() {
 		while(front != null){
-			Node<E> node = front;
-			System.out.println(size+" front="+node.toString());
+			Node<E> tmp = front;
 			front = front.getNext();
-			node = null;
+			tmp = null;
 			size--;
 		}
 		
 	}
-	
-	
+
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		Node<E> node = front;
+		while(node != null){
+			sb.append(node);
+			node = node.getNext();
+		}
+		return "MyLinkQueue [size=" + size + ", front=" + front + ", rear="
+				+ rear + "+queue=[ "+ sb.toString() + "]]";
+	}
 	
 	
 }

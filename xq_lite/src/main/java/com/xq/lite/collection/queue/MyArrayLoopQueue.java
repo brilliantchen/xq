@@ -97,4 +97,12 @@ public class MyArrayLoopQueue<E> implements IXqQueue<E> {
 		this.front = 0;
 		this.rear = 0;
  	}
+
+	@Override
+	public String toString() {
+		return "MyArrayLoopQueue [data=" + Arrays.toString(data) + ", maxSize="
+				+ maxSize + ", size=" + size + ", front=" + front + ", rear="
+				+ rear + "]";
+	}
+ 	
 }
