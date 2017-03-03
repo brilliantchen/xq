@@ -1,0 +1,72 @@
+SVN:
+----------------------------------------------------------------------------------------
+启动服务: svnserve -d -r /root/svn/project         -d 表示以后太服务方式执行，-r就表示root
+//svn port:3690
+安装
+1.yum install subversion
+
+2.创建版本库 
+svnadmin create /root/svn/project
+
+3.初始化版本仓库中的目录
+mkdir svnRepos
+svn import svnRepos/ file:///root/svn/project -m 'init svn repos'
+rm -rf svnRepos
+	
+4.进入conf目录（该svn版本库配置文件）
+	authz文件是权限控制文件
+	passwd是帐号密码文件
+	svnserve.conf SVN服务配置文件	
+--svnserve.conf
+anon-access = none   
+auth-access = write   
+password-db = /root/svn/project/conf/passwd   
+authz-db = /root/svn/project/conf/authz   
+realm = My Test Repository #这是个提示信息
+
+--authz
+[groups]   
+# harry_and_sally = harry,sally
+# harry_sally_and_joe = harry,sally,&joe
+admin = qixiaochen,svn
+
+[/]
+@admin = rw
+* = 
+
+-----?
+[svnRepos:/]
+@admin = rw
+* = 
+
+-- passwd
+[users]
+# harry = harryssecret
+# sally = sallyssecret
+qixiaochen = 123456
+svn = 123456
+
+5.启动server: svnserve -d -r /root/svn/project 
+
+6.测试服务器
+svn checkout svn://192.168.0.201/svnRepos --username=qixiaochen  
+svn checkout svn://192.168.0.201/ --username=qixiaochen
+
+
+
+删除仓库 (需要在仓库上一级目录) 
+svnadmin dump reps 
+
+[aaronwong@localhost ~]$ sudo yum -y install mod_dav_svn
+//mod_dav_svn不是必须安装的，它是Apache HTTP Server的一个插件，你本地仓库(repository)的文件必须通过它才能在网络上与别人共享。
+//subversion的组件列表点此查看。
+可使用以下的仓库存取 (RA) 模块: 
+
+* ra_dav : 通过WebDAV(DeltaV)协议访问仓库的模块。
+  - 处理“http”方案
+  - 处理“https”方案
+* ra_svn : 使用svn网络协议访问仓库的模块。
+  - 处理“svn”方案
+* ra_local : 访问本地磁盘的仓库模块。
+  - 处理“file”方案
+----------------------------------------------------------------------------------------

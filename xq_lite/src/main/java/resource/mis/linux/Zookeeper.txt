@@ -1,0 +1,56 @@
+
+----------------------------------------------------------------------------------------
+三台服务器，将host分别命名为zoo1,zoo2和zoo3
+1.解压
+2.将conf/zoo_sample.cfg拷贝一份命名为zoo.cfg，也放在conf目录下。然后按照如下值修改其中的配置：
+
+tickTime=2000       
+dataDir=/var/lib/zookeeper/
+initLimit=5
+syncLimit=2
+clientPort=2181
+server.1=zoo1:2888:3888
+server.2=zoo2:2888:3888
+server.3=zoo3:2888:3888
+(2888为LF通信端口，表示该服务器与集群中的leader交换的信息的端口。3888为选举端口，表示选举新leader时服务器间相互通信的端口（当leader挂掉时，其余服务器会相互通信，选择出新的leader）。
+一般来说，集群中每个服务器的A端口都是一样，每个服务器的B端口也是一样。)
+
+3.创建/var/lib/zookeeper快照目录，并创建server id文件。
+mkdir /var/lib/zookeeper
+cd /var/lib/zookeeper
+在该目录下创建名为myid的文件，内容为1（这个值随server而改变，后面会提到）。
+4.将server1上已经配置好的/home/dennis/zookeeper-3.4.5/和/var/lib/zookeeper两个目录分别拷贝至server2和server3。
+然后将其上的/var/lib/zookeeper/myid的内容修改为2和3.
+
+5.修改hostname & hosts，我的zookeeper集群中每个结点的配置，以zoo1为例，/etc/hosts内容如下所示：
+10.112.2.222   zoo1
+10.112.2.223   zoo2
+10.112.2.224   zoo3
+
+
+5.启动Zookeeper。注：启动第一台的时候可能会报错，提示zoo2和zoo3，等全部启动完成之后就不会报错了
+sudo java-cp zookeeper-3.4.5.jar:lib/slf4j-api-1.6.1.jar:lib/slf4j-log4j12-1.6.1.jar:lib/log4j-1.2.15.jar:conf\org.apache.zookeeper.server.quorum.QuorumPeerMain conf/zoo.cfg
+1.  开放端口启动
+
+分别在zookeepr集群机器
+
+$ZOOKEEPER_HOME/bin/zkServer.sh start
+ 
+
+注：一开始启动的时候会报错，提示连不上集群其他成员。此时是正常信息，等所有集群成员都启动后，该错误信息便会消失。
+
+2. 查看集群状态
+
+$ZOOKEEPER_HOME/bin/zkServer.sh status
+
+如果正常启动会提示如下信息
+
+[hadoop@mem2 zookeeper]$ bin/zkServer.sh  status
+
+JMX enabled by default
+
+Using config:  /usr/local/zookeeper/bin/../conf/zoo.cfg
+
+Mode: follower
+
+或者jps查看是否有QuorumPeerMain服务，如存在则已经启动。

@@ -1,0 +1,59 @@
+jenkins
+----------------------------------------------------------------------------------------
+rpm 安装
+1. wget -O /etc/yum.repos.d/jenkins.repo http://pkg.jenkins-ci.org/redhat/jenkins.repo  (yum -y install wget)
+2. rpm --import https://jenkins-ci.org/redhat/jenkins-ci.org.key 
+3. yum install jenkins  
+4. service jenkins start
+
+war 包位置： /usr/lib/jenkins/
+jenkins配置文件：/etc/sysconfig/jenkins 
+JENKINS_HOME="/var/lib/jenkins"
+
+
+cat /var/log/messages | grep
+Starting jenkins (via systemctl):  Job for jenkins.service failed because the control process exited with error code. See "systemctl status jenkins.service" and "journalctl -xe" for details.
+                                                           [FAILED]
+如果java yum安装的不会报这个错
+错误：Starting Jenkins bash: /usr/bin/java: No such file or directory
+需要“vi /etc/init.d/jenkins”，把java路径加上
+##############
+# Search usable Java. We do this because various reports indicated
+# that /usr/bin/java may not always point to Java >= 1.6
+# see http://www.nabble.com/guinea-pigs-wanted-----Hudson-RPM-for-RedHat-Linux-td25673707.html
+candidates="
+/etc/alternatives/java
+/usr/lib/jvm/java-1.6.0/bin/java
+/usr/lib/jvm/jre-1.6.0/bin/java
+/usr/lib/jvm/java-1.7.0/bin/java
+/usr/lib/jvm/jre-1.7.0/bin/java
+/usr/lib/jvm/java-1.8.0/bin/java
+/usr/lib/jvm/jre-1.8.0/bin/java
+/usr/bin/java
+#本地jdk目录
+/usr/java/jdk1.7.0_80/bin/java
+"
+for candidate in $candidates
+do
+  [ -x "$JENKINS_JAVA_CMD" ] && break
+  JENKINS_JAVA_CMD="$candidate"
+done
+
+##############
+警告信息：Starting jenkins (via systemctl):  Warning: jenkins.service changed on disk. Run 'systemctl daemon-reload' to reload units.
+这是一个警告，修改/etc/init.d/jenkins文件之后会出现。 执行systemctl daemon-reload 
+
+http://192.168.0.200:8080/
+To ensure Jenkins is securely set up by the administrator, a password has been written to the log (not sure where to find it?) and this file on the server:
+/var/lib/jenkins/secrets/initialAdminPassword
+
+/etc/rc.d/init.d/jenkins
+/var/log/jenkins
+
+
+qixiaochen
+123456
+
+
+
+----------------------------------------------------------------------------------------

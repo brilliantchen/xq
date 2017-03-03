@@ -1,0 +1,21 @@
+Memcached
+Tomcat集群session同步方案有以下几种方式：
+
+使用tomcat自带的cluster方式，多个tomcat间自动实时复制session信息，配置起来很简单。但这个方案的效率比较低，在大并发下表现并不好。原理：http://zyycaesar.iteye.com/blog/296606
+利用nginx的基于访问ip的hash路由策略，保证访问的ip始终被路由到同一个tomcat上，这个配置更简单。但如果应用是某一个局域网大量用户同时登录，这样负载均衡就没什么作用了。
+利用nginx插件实现tomcat集群和session同步，nginx-upstream-jvm-route-0.1.tar.gz，是一个 Nginx 的扩展模块，用来实现基于 Cookie 的 Session Sticky 的功能，可通过http://code.google.com/p/nginx-upstream-jvm-route/downloads/list获取。
+利用memcached把多个tomcat的session集中管理，前端在利用nginx负载均衡和动静态资源分离，在兼顾系统水平扩展的同时又能保证较高的性能。
+
+----------------------------------------------------------------------------------------
+1.yum install memcached
+
+2.chkconfig --level 2345 memcached on (systemctl)
+	Note: Forwarding request to 'systemctl enable memcached.service'.
+	Created symlink from /etc/systemd/system/multi-user.target.wants/memcached.service to /usr/lib/systemd/system/memcached.service.
+3.vi /etc/sysconfig/memcached  绑定的端口、用户、最大连接、最大内存
+
+4. memcached-tool 127.0.0.1:11211 stats即可检测memcached的服务状态
+
+
+
+telnet localhost 11211
