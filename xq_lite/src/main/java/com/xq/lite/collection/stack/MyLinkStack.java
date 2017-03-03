@@ -46,10 +46,8 @@ public class MyLinkStack<E> implements IXqStack<E> {
 		if(isEmpty()){
 			return null;
 		}else{
-			Node<E> node = top;
-			E e = (E) node.getData();
+			E e = (E) top.getData();
 			top = top.getNext();
-			node = null;
 			size --;
 			return e;
 		}

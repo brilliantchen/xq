@@ -25,8 +25,9 @@ public class TestStack {
 		s2.push(22);
 		s2.push(32);
 		System.out.println(s2);
-		System.out.println(s2.search(2));
+		System.out.println(s2.search(12));
 		s2.pop();
+		System.out.println(s2);
 		s2.pop();
 		System.out.println(s2);
 		

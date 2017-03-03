@@ -31,7 +31,6 @@ public class QuickSort {
 			}
 			System.out.println(Arrays.toString(a));
 			a[low] = a[high];
-			a[high] = pivotValue;
 			System.out.println(Arrays.toString(a));
 			while(a[low] <= pivotValue && high > low){
 				low++;
@@ -39,9 +38,9 @@ public class QuickSort {
 			System.out.println("----------");
 			System.out.println(Arrays.toString(a));
 			a[high] = a[low];
-			a[low] = pivotValue;
 			System.out.println(Arrays.toString(a));
 		}
+		a[low] = pivotValue;
 		System.out.println(low+"|"+high);
 		return high;
 	}
