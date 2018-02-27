@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <style type="text/css">
+    <!--
+    /************ Table ************/
+    .xwtable {width: 100%;border-collapse: collapse;border: 1px solid #ccc;}
+    .xwtable thead td {font-size: 12px;color: #333333;text-align: center;
+      /*background: url(table_top.jpg) repeat-x top center;*/
+      border: 1px solid #ccc; font-weight:bold;}
+    .xwtable tbody tr {background: #fff;font-size: 12px;color: #666666;}
+    .xwtable tbody tr.alt-row {background: #f2f7fc;}
+    .xwtable td{line-height:20px;text-align: left;padding:4px 10px 3px 10px;height: 18px;border: 1px solid #ccc;}
+    -->
+  </style>
+</head>
+<body>
+<table class="xwtable">
+  <thead> 编码概念的产生与发展  </thead>
+  <tbody>
+  <tr>
+    <td>阶段一</td>
+    <td>ASCII</td>
+    <td>ASCII是基于拉丁字母的一套电脑编码系统，主要用于显示现代英语和其他西欧语言。它是现今最通用的单字节编码系统，并等同于国际标准ISO/IEC 646。</td>
+  </tr>
+  <tr>
+    <td>阶段二 </td>
+    <td>ASNI(本地化)</td>
+    <td>不同的国家和地区制定了不同的标准，由此产生了 GB2312、GBK、GB18030、Big5、Shift_JIS 等各自的编码标准。这些使用多个字节来代表一个字符的各种汉字延伸编码方式，称为 ANSI 编码。在简体中文Windows操作系统中，ANSI 编码代表 GBK 编码；在繁体中文Windows操作系统中，ANSI编码代表Big5；在日文Windows操作系统中，ANSI 编码代表 Shift_JIS 编码。不同 ANSI 编码之间互不兼容，当信息在国际间交流时，无法将属于两种语言的文字，存储在同一段 ANSI 编码的文本中。</td>
+  </tr>
+  <tr>
+    <td>阶段三</td>
+    <td>UNICODE(国际化)</td>
+    <td>Unicode（统一码、万国码、单一码）是计算机科学领域里的一项业界标准,包括字符集、编码方案等。Unicode 是为了解决传统的字符编码方案的局限而产生的，它为每种语言中的每个字符设定了统一并且唯一的二进制编码，以满足跨语言、跨平台进行文本转换、处理的要求。</td>
+  </tr>
+  </tbody></table>
+
+<table class="xwtable">
+  <thead> 字符，字节，字符串的概念 </thead>
+  <tbody>
+  <tr>
+    <td>字符</td>
+    <td>人们使用的记号，抽象意义上的一个符号。</td>
+    <td>‘1’, ‘中’, ‘a’, ‘$’, ‘￥’等等</td>
+  </tr>
+  <tr>
+    <td>字节</td>
+    <td>计算机中存储数据的单元，一个8位的二进制数，是一个很具体的存储空间。</td>
+    <td>   0x01, 0x45, 0xFA, ……</td>
+  </tr>
+  <tr>
+    <td>UNICODE 字符串</td>
+    <td>在内存中，如果“字符”是以在 UNICODE 中的序号存在的，那么我们称这种字符串为 UNICODE 字符串或者宽字节字符串。</td>
+    <td>“你好hello”</td>
+
+  </tr>
+  </tbody>
+</table>
+
+<table class="xwtable">
+  <tbody>
+  <thead> 常见编码
+  </thead>
+  <tr>
+    <td>分类</td><td>编码标<t/td><td>说明</td>
+  </tr>
+  <tr>
+    <td>ASCII</td>
+    <td>标准ASCII    </td>
+    <td>单字节编码，是一个7位的容器，它总共能表示128个字符，使用7 位二进制数（剩下的1位二进制为0）来表示所有的大写和小写字母，数字0 到9、标点符号， 以及在美式英语中使用的特殊控制字符。
+    </td>
+
+  </tr>
+  <tr>
+    <td></td>
+    <td>ISO-8859-1</td>
+    <td>单字节编码，向下兼容ASCII，是一个8位的容器，它总共能表示 256 个字符。 
+    </td>
+
+  </tr>
+  <tr>
+    <td>ASNI
+    </td>
+    <td>GB2312</td>
+    <td>双字节编码，一个字符表示两个字节 整个字符集分成94个区，每区有94个位。每个区位上只有一个字符，因此可用所在的区和位来对汉字进行编码，称为区位码。总的编码范围是 A1-F7，其中从 A1-A9 是符号区，总共包含 682 个符号，从 B0-F7 是汉字区，包含 6763 个汉字。 
+    </td>
+  </tr>
+  <tr>
+    <td>
+    </td>
+    <td>GBK</td>
+    <td>为了扩展 GB2312，加入更多的汉字，它的编码范围是 8140~FEFE（去掉 XX7F）总共有 23940 个码位，它能表示 21003 个汉字，它的编码是和 GB2312 兼容的，也就是说用 GB2312 编码的汉字可以用 GBK 来解码，并且不会有乱码。GB2312中汉字是两个字节的 </td>
+  </tr>
+  <tr>
+    <td>UNICODE
+    </td>
+    <td>
+      UTF-16</td>
+    <td>UTF-16 具体定义了 Unicode 字符在计算机中存取方法。UTF-16 用两个字节来表示 Unicode 转化格式，这个是定长的表示方法，不论什么字符都可以用两个字节表示，两个字节是 16 个 bit，所以叫 UTF-16。UTF-16 表示字符非常方便，每两个字节表示一个字符，这个在字符串操作时就大大简化了操作，这也是 Java 以 UTF-16 作为内存的字符存储格式的一个很重要的原因。</td>
+  </tr>
+  <tr><td></td>
+    <td>UTF-8</td>
+    <td>多字节编码，UTF-8编码采用一种变长编码规则，如一个英文字母a，只需要一个字节就可以，那么UTF-8编码中a还用一个字节，有些字符需要4个字节才能表示出来，就用4个字节来表示。注意在UTF-8编码中汉字是需要3个字节来表示的。 </td>
+
+  </tr></tbody>
+</table>
+
+</body>
+
+</html>

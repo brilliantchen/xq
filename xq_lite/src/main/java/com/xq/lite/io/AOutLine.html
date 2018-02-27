@@ -1,0 +1,66 @@
+
+<div>
+  流分类：
+  1.字节流
+  InputStream是所有字节输入流的祖先，而OutputStream是所有字节输出流的祖先。
+  2.字符流
+  Reader是所有读取字符串输入流的祖先，而writer是所有输出字符串的祖先。
+  InputStream，OutputStream,Reader,writer都是抽象类。所以不能直接new
+
+  相互转换 InputStreamReader OutputStreamWriter
+  <div>
+    比特 Bit: 1位二进制数,只能拥有一个值，不是0就是1.
+    字节 Byte: 8位的二进制数,0110 1010,
+      int	32-bit  long	64-bit float	32-bit double	64-bit
+      1字母 = 1 byte = 8 bit         1汉字 = 2 byte = 16 bit
+    千字节 Kbyte:1024个字节
+    字符:符号  ‘1’, ‘中’, ‘a’, ‘$’, ‘￥’等等
+  </div>
+  <div>
+    字符流处理的单元为2个字节的Unicode字符，分别操作字符、字符数组或字符串
+    字节流处理单元为1个字节，操作字节和字节数组
+    字符流是由Java虚拟机将字节转化为2个字节的Unicode字符为单位的字符而成的，多国语言支持性比较好！如音频文件、图片、歌曲，就用字节流
+    所有文件的储存是都是字节（byte）的储存，在磁盘上保留的并不是文件的字符而是先把字符编码成字节，再储存这些字节到磁盘
+    读取文件（特别是文本文件）时，也是一个字节一个字节地读取以形成字节序列
+
+  </div>
+</div>
+
+
+
+<div>
+  JDK 7之前的遗留代码，都使用显式地调用close()方法来关闭流
+  JDK 7及以后的代码：
+  带资源的try(try with resources)
+  try （FileOutputStream f0 = new FileOutputStream("file1.txt")) {
+  // 文件写入操作
+  } catch(IOException e) {
+  System.out.println("An I/O Error Occurred");
+  }
+
+</div>
+
+<div>
+  网络编程的基本模型是C/S模型：
+    服务端提供IP和监听端口，客户端向服务端监听的地址发起连接请求，通过三次握手连接，成功后通过套接字socket进行通信
+  BIO
+    服务器实现模式为一个连接一个线程，如果这个连接不做任何事情会造成不必要的线程开销
+    同步阻塞模型，服务端：ServerSocket负责绑定IP地址端口，Acceptor线程监听客户端的连接,建一个新的线程处理请求，返回流，线程销毁；Socket负责发起连接操作
+  伪异步I/O编程：
+    使用线程池来管理Acceptor线程，实现1个或多个线程处理N个客户端的模型
+  NIO: 非阻塞I/O （同步IO，多路复用Selector）
+    客户端发送的连接请求都会注册到多路复用器（Selector）上，多路复用器轮询Channel,有读写启动一个线程进行处理，Buffer类作为缓冲区
+    NIO提供了与传统BIO模型中的Socket和ServerSocket相对应的SocketChannel和ServerSocketChannel两种不同的套接字通道实现,都支持阻塞和非阻塞两种模式。
+    缓冲区 Buffer, 通过缓冲区进行操作,缓冲区实际上是一个数组，并提供了对数据结构化访问以及维护读写位置
+    通道 Channel,相当于io里的steam的抽象. 对数据的读取和写入要通过Channel,通道不同于流的地方就是通道是双向的，可以用于读、写和同时读写操作
+    多路复用器 Selector, 管理多个Channel的工具.  Selector提供选择已经就绪的任务的能力：Selector会不断轮询注册在其上的Channel(时轮询多个,JDK使用了epoll())，某个Channel上面发生读写事件，Channel就处于就绪状态，然后通过SelectionKey获取就绪Channel的集合，进行后续的I/O操作
+  AIO: （真正的异步非阻塞I/O）
+    触发IO操作以后便开始做自己的事情，而当IO操作已经完成的时候会得到IO完成的通知（异步的特点就是通知）。aio提供的事件处理接口CompletionHandler，定义了回调函数，io完成后会被自动的调用
+    客户端的I/O请求都是由OS先完成了再通知服务器应用去启动线程
+  <div>
+    同步	指的是用户进程触发IO操作并等待或者轮询的去查看IO操作是否就绪
+    异步	异步是指用户进程触发IO操作以后便开始做自己的事情，而当IO操作已经完成的时候会得到IO完成的通知（异步的特点就是通知）
+    阻塞	当试图对该文件描述符进行读写时, 如果当时没有东西可读,或者暂时不可写, 程序就进入等待 状态, 直到有东西可读或者可写为止
+    非阻塞	非阻塞状态下, 如果没有东西可读, 或者不可写, 读写函数马上返回, 而不会等待
+  </div>
+</div>
