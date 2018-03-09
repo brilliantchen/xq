@@ -1,4 +1,4 @@
-package com.xq.lite.collection.list;
+package com.xq.lite.collection.list.my;
 
 import java.util.Iterator;
 

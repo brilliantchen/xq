@@ -1,4 +1,8 @@
 ----------------------Linux----------------------------------------------------
+禁用SELinux
+vi /etc/selinux/config 
+SELINUX=disabled  
+
 JDK:
 ----------------------------------------------------------------------------------------
 /etc/profile
@@ -106,8 +110,42 @@ chkconfig，chkconfig命令可以快速地设置开机时需要自动启动的服务程序.
 ----------------------------------------------------------------------------------------
 
 ----------------------------------------------------------------------------------------
+groupadd admin 
+useradd -g admin admin
+passwd admin
+-g 所属组 -d 家目录 -s 所用的SHELL
+chown -R username:groupName dirName
 
+su [user]切换到其他用户，但是不切换环境变量，su - [user]则是完整的切换到新的用户环境。
+----------------------------------------------------------------------------------------
+yum istall java
+yum localinstall jdk-8u20-linux-x64.rpm -y
+1.使用YUM查找软件包
+命令：yum search nginx
+2.列出所有可安装的软件包
+命令：yum list
+	  yum list java* -y
+3.列出所有可更新的软件包
+命令：yum list updates
+4.列出所有已安装的软件包
+命令：yum list installed
+	  yum list installed |grep java
 
-
+----------------------------------------------------------------------------------------
+systemctl是主要的工具，它融合之前service和chkconfig的功能于一体。可以使用它永久性或只在当前会话中启用/禁用服务。
+systemctl可以列出正在运行的服务状态
+systemd-cgls以树形列出正在运行的进程，它可以递归显示控制组内容。
+启动/关闭、启用/禁用服务：
+启动一个服务：systemctl start postfix.service
+关闭一个服务：systemctl stop postfix.service
+重启一个服务：systemctl restart postfix.service
+显示一个服务的状态：systemctl status postfix.service
+在开机时启用一个服务：systemctl enable postfix.service
+在开机时禁用一个服务：systemctl disable postfix.service
+查看服务是否开机启动：systemctl is-enabled postfix.service;echo $?
+查看已启动的服务列表：systemctl list-unit-files|grep enabled
+列出正在运行的服务状态：systemctl
+以树形列出正在运行的进程：systemd-cgls
+说明：启用服务就是在当前“runlevel”的配置文件目录/etc/systemd/system/multi-user.target.wants/里，建立/usr/lib/systemd/system里面对应服务配置文件的软链接；禁用服务就是删除此软链接。
 
 

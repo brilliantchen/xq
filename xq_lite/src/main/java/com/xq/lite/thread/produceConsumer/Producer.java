@@ -1,7 +1,5 @@
 package com.xq.lite.thread.produceConsumer;
 
-import com.xq.lite.thread.ProdConsTester;
-
 public class Producer implements Runnable {
 
 	@Override

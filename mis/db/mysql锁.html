@@ -1,0 +1,23 @@
+<div>
+
+  InnoDB引擎
+  InnoDB行锁是通过给索引上的索引项加锁来实现的，只有通过索引进行检索的时候才会使用行级锁，否则会使用表级锁。
+  这里我们希望使用行级锁，就要给method_name（列）添加索引，值得注意的是，这个索引一定要创建成唯一索引，否则会出现多个重载方法之间无法同时被访问的问题。
+  重载方法的话建议把参数类型也加上。
+  　共享锁（S）：SELECT * FROM table_name WHERE ... LOCK IN SHARE MODE
+  　排他锁（X）：SELECT * FROM table_name WHERE ... FOR UPDATE
+
+  乐观锁
+  a. 先执行select操作查询当前数据的数据版本号,比如当前数据版本号是26：
+  select id, resource, state,version from t_resource  where state=1 and id=5780;
+  b. 执行更新操作：
+  update t_resoure set state=2, version=27, update_time=now() where resource=xxxxxx and state=1 and version=26
+
+  排它锁
+  start transaction;
+  select * from user where userId = 1 for update;
+  update user set userAge = 100 where userId = 1;
+  commit
+
+
+</div>

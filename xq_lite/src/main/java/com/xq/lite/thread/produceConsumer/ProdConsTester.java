@@ -1,4 +1,4 @@
-package com.xq.lite.thread;
+package com.xq.lite.thread.produceConsumer;
 
 import com.xq.lite.thread.produceConsumer.Consumer;
 import com.xq.lite.thread.produceConsumer.Producer;

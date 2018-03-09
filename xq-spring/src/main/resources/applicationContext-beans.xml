@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:aop="http://www.springframework.org/schema/aop"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:jee="http://www.springframework.org/schema/jee"
+  xmlns:task="http://www.springframework.org/schema/task"
+  xsi:schemaLocation="
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+        http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-4.0.xsd
+        http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-4.0.xsd">
+
+  <bean id="propertyConfigurer"
+    class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+    <property name="locations">
+      <list>
+        <value>classpath*:property.properties</value>
+        <!--<value>classpath*:dubbo.properties</value>-->
+      </list>
+    </property>
+  </bean>
+  <!-- 依赖对象自动注入,启动注解标示, 主要是@Autowired(ByType) ,@Resource(ByName).... -->
+  <context:annotation-config/>
+  <context:component-scan base-package="com.xq">
+    <context:exclude-filter type="annotation"
+      expression="org.springframework.stereotype.Controller"/>
+  </context:component-scan>
+  <!--配置aop自动创建代理-->
+  <!-- 手动按类型注入文件服务 -->
+
+  <!-- <import resource="classpath*:applicationContext-woa-springCache.xml" /> -->
+  <!-- <import resource="classpath*:applicationContext-woa-task.xml" /> -->
+
+  <bean id="student" class="com.xq.modle.Student"/>
+
+  <bean class="com.xq.modle.Teacher"/>
+
+</beans>

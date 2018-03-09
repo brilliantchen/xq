@@ -1,0 +1,234 @@
+<div>
+
+  vim /etc/yum.repos.d/mongodb-org-3.4.repo
+
+
+  [mongodb-org-3.4]
+  name=MongoDB Repository
+  baseurl=https://repo.mongodb.org/yum/redhat/$releasever/mongodb-org/3.4/x86_64/
+  gpgcheck=1
+  enabled=1
+  gpgkey=https://www.mongodb.org/static/pgp/server-3.4.asc
+
+  yum -y install mongodb-org
+
+
+  systemctl start mongod.service
+  systemctl status mongod.service
+
+  sudo rm -r /var/log/mongodb
+  sudo rm -r /var/lib/mongo
+  ----------------------------------------------------------------------------------------
+  mongo shell
+  mongo
+  help
+  db.help()
+
+  show dbs:显示数据库列表
+  show collections：显示当前数据库中的集合（类似关系数据库中的表）
+  show users：显示用户
+  db : 显示你当前正在使用的数据库
+  db.dropDatabase(); 删除当前使用数据库
+
+  use DATABASE_NAME :如果数据库不存在，则创建数据库，否则切换到指定数据库
+  use DATABASE_NAME
+  db.xqtest.insert()
+  db.xqtest.find()
+  db.stats()
+
+  1）开启安全认证：修改mongo.conf里，security.authorization=enbaled
+  2）use admin --在admin库创建用户
+  db.system.users.find()
+  创建管理员用户：
+  db.createUser({user:"xqadmin",pwd:"123456",roles:[{role:"userAdminAnyDatabase",db:"admin"}]})
+  3）db.auth("xqadmin", "123456" ) or 重启mongodb，用mongo shell 认证方式登陆
+  mongo --port 27017 -u "xqadmin" -p "123456" --authenticationDatabase "admin"
+  4）创建普通用户：
+  use guan_yi
+  db.createUser({user:"xquser",pwd:"123456",roles:[{role:"readWrite",db:"guan_yi"}]})
+  db.auth("xquser", "123456" )
+  db.guan_yi.insert({"name":"test"})
+
+
+  mongo --port 27017 -u "xquser" -p "123456" --authenticationDatabase "guan_yi"
+
+
+
+  ----------------------------------------------------------------------------------------
+
+  返回集合中所有文档
+  db.collection.find({})
+
+  （2）指定使用投影运算符返回的字段省略此参数返回匹配文档中的所有字段
+  >db.orders.find({},{field1: <boolean>, field2: <boolean> ... })
+  >db.orders.find({},{"onumber":1,"cname":1})
+
+  2. 根据条件查询
+  (1)     等于条件查询
+  >db.collect.find({<field1>: <value1>,<field2>: <value2>, ... })
+    >db.orders.find({"onumber":"002"})
+    (2)     比较操作符  $gt（大于）、$gte（大于或等于）、 $lt（小于）、 $lte（小于或等于）
+    { <field1>: { <expression1> },<field2>: {<expression1> }, ... }
+
+      $gt（大于）比较操作符:
+      >db.orders.find({"onumber":{$gt:"003"}})
+      $gte（大于或等于）与 $lte（小于或等于）联合查询并指定返回字段（通过第二参数）
+      >db.orders.find({"onumber":{$gte:"002",$lte:"003"}},{"onumber":1,"cname":1})
+      （3） $or、和 $and 条件查询
+      1）$and 条件查询
+      { $and: [ { <expression1> }, { <expression2> } , ... , ]}
+        >db.orders.find({"onumber":"002","cname":"zcy2"})
+        2）$or(或者)条件查询
+        { $or: [ { <expression1> }, { <expression2> }, ... ] }
+          >db.orders.find({$or:[{"onumber":"002"},{"cname":"zcy1"}]})
+          3) $or 和$and 联合条件查询
+          >db.orders.find({$and:[{"date":"2015-07-01"},{$or:[{"onumber":"002"},{"cname":"zcy1"}]}]})
+          （4）$in（包含）、$nin（不包含）条件查询
+          1）$in（包含）条件查询
+          { field: { $in: [<value1>, < value2>, ...] }
+            >db.orders.find({"onumber":{$in:["001","002"]}})
+            2）$nin（不包含）条件查询
+            { field: { $nin: [<value1>, < value2>, ...] } }
+              （5）$not(不等于) 条件查询
+              { field: { $not: { < expression1> } } }
+              $not操作符不能独立使用，必须跟其他操作条件一起使用（除$regex）
+              >db.orders.find({"onumber":{$not:{$gt:"002"}}})
+
+              （6）$exists用来判断一个field是否存在
+              { field: { $ exists:  < boolean>  } }
+              >db.orders.find({"age":{$exists:true}})
+              （7）$mod取模并等于指定的值
+              { field: { $mod: [ value, value2 ]} }
+              对元素field值对value取模的，取模的值要value2的文档数据
+              >db.orders.find({"age":{$mod:[5,1]}})
+              对age元素的值和5取模，取模的值要等于1的文档数据
+              （8）null 查找元素不存在和元素对应的值为null的文档
+              >db.orders.find({"age":null})
+              1)      查找age元素存在并值等于null
+              >db.orders.find({"age":{$in:[null],$exists:true}})
+              （9） $type来匹配一个元素的类型
+              { field: { $type: < number >} }
+
+
+              .sort({'key':1})
+              .sort({'key':-1})
+              .limit(2)
+              .skip(1)
+              .count()
+
+
+              update
+              db.col.update({'title':'MongoDB 教程'},{$set:{'title':NumberInt(10)}},{multi:true})	//NumberLong
+              db.col.update({},{$inc:{"age":-1}},{multi:true})
+              db.col.remove({}},{multi:true})
+
+              aggregate
+              .aggregate([{ $match: { type: 1 } },
+              {$group : {_id : "$plan_date", count : {$sum : 1}, totalTest: { $sum: "$type" }}},
+              { $sort: { count: -1 } }
+              ])
+              $project：修改输入文档的结构。可以用来重命名、增加或删除域，也可以用于创建计算结果以及嵌套文档。
+              $match：用于过滤数据，只输出符合条件的文档。$match使用MongoDB的标准查询操作。
+              $limit：用来限制MongoDB聚合管道返回的文档数。
+              $skip：在聚合管道中跳过指定数量的文档，并返回余下的文档。
+              $unwind：将文档中的某一个数组类型字段拆分成多条，每条包含数组中的一个值。
+              $group：将集合中的文档分组，可用于统计结果。
+              $sort：将输入文档排序后输出。
+              $geoNear：输出接近某一地理位置的有序文档。
+
+
+              >db.collection.mapReduce(
+              function() {emit(key,value);},  //map 函数
+              function(key,values) {return reduceFunction},   //reduce 函数
+              {
+              out: collection,
+              query: document,
+              sort: document,
+              limit: number
+              }
+              )
+
+              map ：映射函数 (生成键值对序列,作为 reduce 函数参数)。
+              reduce 统计函数，reduce函数的任务就是将key-values变成key-value，也就是把values数组变成一个单一的值value。。
+              out 统计结果存放集合 (不指定则使用临时集合,在客户端断开后自动删除)。
+              query 一个筛选条件，只有满足条件的文档才会调用map函数。（query。limit，sort可以随意组合）
+              sort 和limit结合的sort排序参数（也是在发往map函数前给文档排序），可以优化分组机制
+              limit 发往map函数的文档数量的上限（要是没有limit，单独使用sort的用处不大）
+
+              .mapReduce(
+              function() { emit(this.plan_date,1); },
+              function(key, values) {return Array.sum(values)},
+              {
+              query:{type:1},
+              out:"test_a"
+              }
+              ).find()
+
+              db.getCollection('device_data_collection_59883b83fe9f577f3fc94a39').find({"divice_type" : "4","gmt_created":{$gte : "2017-09-22"}})
+
+
+
+              ----------------------------------------------------------------------------------------索引
+              创建索引的命令：
+              > db.test.createIndex({"username":1}, {background: 1})
+              -- 数字1表示username键的索引按升序存储，-1表示age键的索引按照降序方式存储
+              复合索引
+              > db.test.createIndex({"username":1, "age":-1})
+
+              可以通过下面的名称查看索引是否已经成功建立：
+              > db.test.getIndexes()
+              删除索引的命令是：
+              > db.test.dropIndex({"username":1})
+
+              唯一索引：
+              在缺省情况下创建的索引均不是唯一索引。下面的示例将创建唯一索引，如：
+              > db.test.createIndex({"userid":1},{"unique":true})
+              --创建唯一索引，并消除重复数据。
+              > db.test.createIndex({"userid":1},{"unique":true,"dropDups":true})
+
+
+              三、使用explain：
+              explain是非常有用的工具，会帮助你获得查询方面诸多有用的信息。只要对游标调用该方法，就可以得到查询细节。explain会返回一个文档，而不是游标本身。如：
+              > db.test.find().explain()
+              {
+              "cursor" : "BasicCursor",
+              "nscanned" : 1,
+              "nscannedObjects" : 1,
+              "n" : 1,
+              "millis" : 0,
+              "nYields" : 0,
+              "nChunkSkips" : 0,
+              "isMultiKey" : false,
+              "indexOnly" : false,
+              "indexBounds" : {
+
+              }
+              }
+              explain会返回查询使用的索引情况，耗时和扫描文档数的统计信息。
+              "cursor":"BasicCursor"表示没有使用索引。
+              "nscanned":1 表示查询了多少个文档。
+              "n":1 表示返回的文档数量。
+              "millis":0 表示整个查询的耗时
+
+
+              ----------------------------------------------------------------------------------------连接池
+              connectionsPerHost：每个主机答应的连接数（每个主机的连接池大小），当连接池被用光时，会被阻塞住，默认值为100
+              threadsAllowedToBlockForConnectionMultiplier：线程队列数，它和上面connectionsPerHost值相乘的结果就是线程队列最大值。如果连接线程排满了队列就会抛出“Out of semaphores to get db”错误，默认值为5，则最多有500个线程可以等待获取连接
+              maxWaitTime: 被阻塞线程从连接池获取连接的最长等待时间(ms)。默认值为120,000
+              connectTimeout：在建立（打开）套接字连接时的超时时间（ms）。默认值为10,000
+              socketTimeout：套接字超时时间（ms）。默认值为0，无限制（infinite）
+
+              connectTimeout 和 socketTimeout 的区别：###
+
+              一次完整的请求包括三个阶段：
+
+              建立连接
+              数据传输
+              断开连接
+              如果与服务器(这里指数据库)请求建立连接的时间超过ConnectTimeout，就会抛 ConnectionTimeOutException，即服务器连接超时，没有在规定的时间内建立连接。
+              如果与服务器连接成功，就开始数据传输了。
+              如果服务器处理数据用时过长，超过了SocketTimeOut，就会抛出SocketTimeOutExceptin，即服务器响应超时，服务器没有在规定的时间内返回给客户端数据。
+
+
+
+</div>

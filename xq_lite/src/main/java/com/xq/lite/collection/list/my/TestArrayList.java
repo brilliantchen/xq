@@ -1,12 +1,13 @@
-package com.xq.lite.collection.list;
+package com.xq.lite.collection.list.my;
 
-public class TestList {
+public class TestArrayList {
 
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		MyLinkList<String> ls = new MyLinkList<String>();
+		// TODO Auto-generated method stub
+		MyArrayList<String> ls = new MyArrayList<String>();
 		ls.add("11");
 		ls.add("22");
 		ls.add("33");
@@ -17,8 +18,9 @@ public class TestList {
 		ls.remove(2);
 		System.out.println(ls.toString());
 		for (int i = 0; i < ls.getSize(); i++) {
-			System.out.println(i+" "+ls.getNode(i));
+			System.out.println(i+" = "+ls.get(i));
 		}
+
 	}
 
 }
