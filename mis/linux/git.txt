@@ -1,0 +1,81 @@
+clone 某个分支：
+git clone -b b1 https://github.com/...
+clone所有分支
+git clone https://github.com/...
+------------------------------------------------------------------------
+git branch -a
+* master
+  origin/HEAD -> origin/master
+  origin/master
+  origin/b1
+git checkout b1
+
+＃远程分支
+git branch -r
+＃本地分支
+git branch
+  master
+* v0.9rc1
+
+＃切换回master分支
+$ git checkout master
+------------------------------------------------------------------------
+git pull
+git commit 文件 -m 'comment'
+git push
+------------------------------------------------------------------------
+
+看下提交log
+------------------------------------------------------------------------
+git log
+git log --graph --oneline
+ 1. 33be59b third commit
+ 2. ab56d39 second commit
+ 3. c773001 first commit
+------------------------------------------------------------------------
+reset
+git reset HEAD
+git reset --soft HEAD
+git reset --hard HEAD
+
+------------------------------------------------------------------------
+git status
+git diff
+
+远程分支20180126_5_1 合并到本地
+git merge origin/20180126_5_1
+
+------------------------------------------------------------------------
+Command line instructions
+
+
+Git global setup
+
+git config --global user.name "Moyo-chat"
+git config --global user.email "moyo-chat@zhongan.io"
+
+Create a new repository
+
+git clone https://gitlab.moyochat.io/moyochat/moyochat-usercenter.git
+cd moyochat-usercenter
+touch README.md
+git add README.md
+git commit -m "add README"
+git push -u origin master
+
+Existing folder
+
+cd existing_folder
+git init
+git remote add origin https://gitlab.moyochat.io/moyochat/moyochat-usercenter.git
+git add .
+git commit -m "Initial commit"
+git push -u origin master
+
+Existing Git repository
+
+cd existing_repo
+git remote rename origin old-origin
+git remote add origin https://gitlab.moyochat.io/moyochat/moyochat-usercenter.git
+git push -u origin --all
+git push -u origin --tags

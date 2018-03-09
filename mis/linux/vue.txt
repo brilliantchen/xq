@@ -1,0 +1,22 @@
+1.node.js环境（npm包管理器）
+	下载并安装node,安装完成后查看：
+	node -v  
+	npm -v
+2.npm的国内镜像---cnpm  ??
+	有些npm有些资源被屏蔽或者是国外资源的原因，经常会导致用npm安装依赖包的时候失败
+	npm install -g cnpm --registry=http://registry.npm.taobao.org
+3.安装vue-cli 脚手架构建工具
+	cnpm install -g vue-cli   (注意，这里使用cnpm来替代npm，不然速度超级慢，会导致卡在那)
+4.用vue-cli构建项目
+	cd dir
+	vue init webpack xqtest (初始化一个项目，xqApp是整个项目文件夹的名称，其中webpack是构建工具，也就是整个项目是基于webpack的) 
+	这个项目现在还只是一个结构框架，整个项目需要的依赖资源都还没有安装，src目录。
+5.安装项目所需的依赖
+	cd xqtest
+	npm install (安装完成之后，项目目录xqApp文件夹中多出一个node_modules文件夹，这里边就是我们项目需要的依赖包资源)
+6.运行项目
+	npm run dev 用热加载的方式运行我们的应用，热加载可以让我们在修改完代码后不用手动刷新浏览器就能实时看到修改后的效果。
+	其中的“run”对应的是package.json文件中，scripts字段中的dev，也就是 node build/dev-server.js命令的一个快捷方式
+7.项目运行成功后，浏览器会自动打开localhost:8080
+
+8.发布代码： npm run build

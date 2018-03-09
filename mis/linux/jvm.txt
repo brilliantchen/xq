@@ -1,0 +1,64 @@
+java -Xmx3550m -Xms3550m -Xmn2g -Xss128k
+-Xmx3550m:设置JVM最大可用内存为3550M.
+-Xms3550m:设置JVM促使内存为3550m.此值可以设置与-Xmx相同,以避免每次垃圾回收完成后JVM重新分配内存.
+-Xmn2g:设置年轻代大小为2G.整个堆大小=年轻代大小 + 年老代大小 + 持久代大小.持久代一般固定大小为64m,所以增大年轻代后,将会减小年老代大小.此值对系统性能影响较大,Sun官方推荐配置为整个堆的3/8.
+-Xss128k:设置每个线程的堆栈大小.JDK5.0以后每个线程堆栈大小为1M,以前每个线程堆栈大小为256K.更具应用的线程所需内存大小进行 调整.在相同物理内存下,减小这个值能生成更多的线程.但是操作系统对一个进程内的线程数还是有限制的,不能无限生成,经验值在3000~5000左右.
+java -Xmx3550m -Xms3550m -Xss128k -XX:NewRatio=4 -XX:SurvivorRatio=4 -XX:MaxPermSize=16m -XX:MaxTenuringThreshold=0
+-XX:NewRatio=4:设置年轻代(包括Eden和两个Survivor区)与年老代的比值(除去持久代).设置为4,则年轻代与年老代所占比值为1:4,年轻代占整个堆栈的1/5
+-XX:SurvivorRatio=4:设置年轻代中Eden区与Survivor区的大小比值.设置为4,则两个Survivor区与一个Eden区的比值为2:4,一个Survivor区占整个年轻代的1/6
+
+
+
+堆设置
+-Xms:初始堆大小
+-Xmx:最大堆大小
+-Xmn 设置堆中新生代大小。NewSize与MaxNewSize设为一致
+-XX:NewSize=n:设置年轻代大小
+-XX:NewRatio=n:设置年轻代和年老代的比值。如:为3，表示年轻代与年老代比值为1：3，年轻代占整个年轻代年老代和的1/4
+-XX:SurvivorRatio=n:年轻代中Eden区与两个Survivor区的比值。注意Survivor区有两个。如：3，表示Eden：Survivor=3：2，一个Survivor区占整个年轻代的1/5
+-XX:MaxPermSize=n:设置持久代大小
+收集器设置
+-XX:+UseSerialGC:设置串行收集器
+-XX:+UseParallelGC:设置并行收集器
+-XX:+UseParalledlOldGC:设置并行年老代收集器
+-XX:+UseConcMarkSweepGC:设置并发收集器
+垃圾回收统计信息
+-XX:+PrintGC
+-XX:+PrintGCDetails
+-XX:+PrintGCTimeStamps
+-Xloggc:filename
+并行收集器设置
+-XX:ParallelGCThreads=n:设置并行收集器收集时使用的CPU数。并行收集线程数。
+-XX:MaxGCPauseMillis=n:设置并行收集最大暂停时间
+-XX:GCTimeRatio=n:设置垃圾回收时间占程序运行时间的百分比。公式为1/(1+n)
+并发收集器设置
+-XX:+CMSIncrementalMode:设置为增量模式。适用于单CPU情况。
+-XX:ParallelGCThreads=n:设置并发收集器年轻代收集方式为并行收集时，使用的CPU数。并行收集线程数。
+
+
+JVM 
+有下面的一些jvm的参数，他们的默认值一般比较容易忽略，记录下来，方便查询
+-Xms   默认情况下堆内存的64分之一
+-Xmx   默认情况下对内存的4分之一
+-Xmn   默认情况下堆内存的64分之一
+-XX:Newsize  新生代初始大小
+-XX:NewRatio  默认为2
+-XX:SurvivorRatio 默认为8
+ 
+避免Concurrent Mode Failure
+年老代剩余空间>=EDEN+SURVIROR，即：
+(Xmx-Xmn)*(1-CMSInitiatingOccupancyFraction/100)>=(Xmn-Xmn/(SurvivorRatior+2))
+ 
+
+
+
+jdk8中tomcat修改配置PermSize为MetaspaceSize
+JDK8中用metaspace代替permsize，因此在许多我们设置permsize大小的地方同样需要修改配置为metaspace
+将-XX:PermSize=200m;-XX:MaxPermSize=256m;
+修改为：-XX:MetaspaceSize=200m;-XX:MaxMetaspaceSize=256m;
+
+
+-XX:MetaspaceSize=120m;
+-XX:MaxMetaspaceSize=150m;
+-XX:SurvivorRatio=4
+-Xmn:500m

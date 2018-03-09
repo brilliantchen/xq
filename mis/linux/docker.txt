@@ -1,0 +1,36 @@
+1.Docker 运行在 CentOS 7 上，要求系统为64位、系统内核版本为 3.10 以上
+	uname -r 
+	3.10.0-327.el7.x86_64
+
+2. yum -y install docker
+3.启动 Docker 后台服务
+	service docker start
+4.测试运行 hello-world， 由于本地没有hello-world这个镜像，所以会下载一个hello-world的镜像，并在容器内运行。
+	docker run hello-world
+	
+鉴于国内网络问题，后续拉取 Docker 镜像十分缓慢，我们可以需要配置加速器来解决，我使用的是网易的镜像地址：http://hub-mirror.c.163.com。
+新版的 Docker 使用 /etc/docker/daemon.json（Linux）
+{
+  "registry-mirrors": ["http://hub-mirror.c.163.com"]
+}
+
+
+5.通过运行exit命令或者使用CTRL+D来退出容器。
+
+
+docker run ubuntu:15.10 /bin/echo "Hello world"
+docker stop
+docker ps
+
+----------------------------------------------------------------------------------------
+
+列出镜像：docker images 来列出本地主机上的镜像
+获取镜像：docker pull 
+查询镜像：docker search httpd
+更新镜像：
+	在运行的容器内使用 apt-get update 命令进行更新。
+	在完成操作之后，输入 exit命令来退出这个容器。
+	docker commit -m="has update" -a="runoob" e218edb10161 runoob/ubuntu:v2
+构建镜像：docker build
+设置镜像标签：docker tag 860c279d2fec runoob/centos:dev
+docker port 命令可以让我们快捷地查看端口的绑定情况。
