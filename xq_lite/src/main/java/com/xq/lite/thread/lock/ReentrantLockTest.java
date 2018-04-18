@@ -12,10 +12,10 @@ public class ReentrantLockTest {
 
   public static void main(String[] args) {
     ReentrantLockTest rlt = new ReentrantLockTest();
-    for (int i = 0; i < 100; i++) {
-      Thread nonT = new Thread(new NonFairTestThread(rlt));
+    for (int i = 0; i < 10; i++) {
+      /*Thread nonT = new Thread(new NonFairTestThread(rlt));
       nonT.setName("nonFair[" + (i + 1) + "]");
-      nonT.start();
+      nonT.start();*/
 
       Thread fairT = new Thread(new FairTestThread(rlt));
       fairT.setName("fair[" + (i + 1) + "]");
