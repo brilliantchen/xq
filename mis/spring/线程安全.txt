@@ -1,0 +1,6 @@
+Spring MVC默认是Singleton
+
+1、在控制器中不使用实例变量
+2、将控制器的作用域从单例改为原型，即在spring配置文件Controller中声明 scope="prototype"，每次都创建新的controller
+3、在Controller中使用ThreadLocal变量
+ service dao 无状态的Bean

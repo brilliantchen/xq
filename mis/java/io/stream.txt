@@ -1,0 +1,25 @@
+ 流分类：
+  1.字节流
+  InputStream是所有字节输入流的祖先，而OutputStream是所有字节输出流的祖先。
+  2.字符流
+  Reader是所有读取字符串输入流的祖先，而writer是所有输出字符串的祖先。
+  InputStream，OutputStream,Reader,writer都是抽象类。所以不能直接new
+
+  相互转换 InputStreamReader OutputStreamWriter
+  <div>
+    比特 Bit: 1位二进制数,只能拥有一个值，不是0就是1.
+    字节 Byte: 8位的二进制数,0110 1010,
+      int	32-bit  long	64-bit float	32-bit double	64-bit
+      1字母 = 1 byte = 8 bit         1汉字 = 2 byte = 16 bit
+    千字节 Kbyte:1024个字节
+    字符:符号  ‘1’, ‘中’, ‘a’, ‘$’, ‘￥’等等
+  </div>
+  
+  <div>
+    字符流处理的单元为2个字节的Unicode字符，分别操作字符、字符数组或字符串
+    字节流处理单元为1个字节，操作字节和字节数组
+    字符流是由Java虚拟机将字节转化为2个字节的Unicode字符为单位的字符而成的，多国语言支持性比较好！如音频文件、图片、歌曲，就用字节流
+    所有文件的储存是都是字节（byte）的储存，在磁盘上保留的并不是文件的字符而是先把字符编码成字节，再储存这些字节到磁盘
+    读取文件（特别是文本文件）时，也是一个字节一个字节地读取以形成字节序列
+
+  </div>

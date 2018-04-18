@@ -1,0 +1,87 @@
+-----------------------------------------------------------------------------------------------------------------------------------
+CAS操作(CompareAndSwap)。CAS操作简单的说就是比较并交换。CAS 操作包含三个操作数 —— 内存位置（V）、预期原值（A）和新值(B)。如果内存位置的值与预期原值相匹配，那么处理器会自动将该位置值更新为新值。否则，处理器不做任何操作。无论哪种情况，它都会在
+CAS 指令之前返回该位置的值。CAS 有效地说明了“我认为位置 V 应该包含值 A；如果包含该值，则将 B 放到这个位置；否则，不要更改该位置，只告诉我这个位置现在的值即可。
+
+1）Lock是一个接口，而synchronized是Java中的关键字，synchronized是内置的语言实现；
+
+2）synchronized在发生异常时，会自动释放线程占有的锁，因此不会导致死锁现象发生；而Lock在发生异常时，如果没有主动通过unLock()去释放锁，则很可能造成死锁现象，因此使用Lock时需要在finally块中释放锁；
+
+3）Lock可以让等待锁的线程响应中断，而synchronized却不行，使用synchronized时，等待的线程会一直等待下去，不能够响应中断；
+
+4）通过Lock可以知道有没有成功获取锁，而synchronized却无法办到。
+
+5）Lock只适用与代码块锁，而synchronized 对象之间的互斥关系；
+  ）可定时的、可轮询的与可中断的锁获取操作
+  ）公平队列或非块结构的锁
+-----------------------------------------------------------------------------------------------------------------------------------
+public abstract void lock();
+
+public abstract void lockInterruptibly() throws InterruptedException;
+
+public abstract boolean tryLock();
+
+public abstract boolean tryLock(long paramLong , TimeUnit paramTimeUnit) throws InterruptedException;
+
+public abstract void unlock();
+
+public abstract Condition newCondition();
+-----------------------------------------------------------------------------------------------------------------------------------
+ReentrantLock
+ volatile int state;
+ transient Thread exclusiveOwnerThread;
+ Node 双端队列
+ 
+ 
+公平锁模型：
+初始化时， state=0，
+A线程请求锁，state+1   =1
+线程B请求锁，线程B无法获取锁，生成节点进行排队
+初始化的时候，会生成一个空的头节点，然后才是B线程节点，线程A又请求锁，获得锁，state+1 =2
+(可重入锁。就是一个线程在获取了锁之后，再次去获取了同一个锁，这时候仅仅是把状态值进行累加)
+只有线程A把此锁全部释放了，状态值减到0了，其他线程才有机会获取锁,state恢复为0，然后会通知队列唤醒B线程节点，使B可以再次竞争锁
+
+非公平锁模型：
+当线程A执行完之后，要唤醒线程B是需要时间的，而且线程B醒来后还要再次竞争锁，所以如果在切换过程当中，来了一个线程C，
+线程C是有可能获取到锁的，如果C获取到了锁，B就只能继续继续休眠了
+final void lock() {
+	if (compareAndSetState(expect:0, update:1))// expect 0, 原子操作后新值是1，获得锁成功
+		setExclusiveOwnerThread(Thread.currentThread());
+	else
+		acquire(1);
+}
+
+unsafe.compareAndSwapInt(this, stateOffset, expect, update); //stateOffset 原始值，expect预期值，新值update
+
+
+public void unlock() {
+	sync.release(1);
+}
+
+protected final boolean tryRelease(int releases) {
+	int c = getState() - releases;
+	if (Thread.currentThread() != getExclusiveOwnerThread())
+		throw new IllegalMonitorStateException();
+	boolean free = false;
+	if (c == 0) {
+		free = true;
+		setExclusiveOwnerThread(null);
+	}
+	setState(c);
+	return free;
+}
+
+-----------------------------------------------------------------------------------------------------------------------------------
+AbstractQueuedSynchronizer简称AQS，是一个用于构建锁和同步容器的框架。事实上concurrent包内许多类都是基于AQS构建，例如ReentrantLock，Semaphore，CountDownLatch，ReentrantReadWriteLock，FutureTask等。AQS解决了在实现同步容器时设计的大量细节问题。
+
+AQS使用一个FIFO的队列表示排队等待锁的线程，队列头节点称作“哨兵节点”或者“哑节点”，它不与任何线程关联。
+其他的节点与等待线程关联，每个节点维护一个等待状态waitStatus
+ *      +------+  prev +-----+       +-----+
+ * head |      | <---- |     | <---- |     |  tail
+ *      +------+       +-----+       +-----+
+ 
+
+AQS中还有一个表示状态的字段state，例如ReentrantLocky用它表示线程重入锁的次数，Semaphore用它表示剩余的许可数量，FutureTask用它表示任务的状态。
+对state变量值的更新都采用CAS操作保证更新操作的原子性。
+AbstractQueuedSynchronizer继承了AbstractOwnableSynchronizer，这个类只有一个变量：exclusiveOwnerThread，表示当前占用该锁的线程，并且提供了相应的get，set方法。
+
+ 

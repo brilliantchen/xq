@@ -67,6 +67,7 @@
   (1)     等于条件查询
   >db.collect.find({<field1>: <value1>,<field2>: <value2>, ... })
     >db.orders.find({"onumber":"002"})
+	.find({"realName" : { $regex: /^郭/}})  //模糊查询
     (2)     比较操作符  $gt（大于）、$gte（大于或等于）、 $lt（小于）、 $lte（小于或等于）
     { <field1>: { <expression1> },<field2>: {<expression1> }, ... }
 
@@ -121,6 +122,11 @@
               db.col.update({'title':'MongoDB 教程'},{$set:{'title':NumberInt(10)}},{multi:true})	//NumberLong
               db.col.update({},{$inc:{"age":-1}},{multi:true})
               db.col.remove({}},{multi:true})
+			  db.getCollection('scene').find({"userid" : NumberLong(101)}).forEach(
+					 function(item){
+					   db.getCollection('scene').update({"_id":item._id},{$set:{"settings.failaction":[item.settings.failaction]}},false,true)
+					 }
+					)
 
               aggregate
               .aggregate([{ $match: { type: 1 } },

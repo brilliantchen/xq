@@ -7,13 +7,13 @@
   　共享锁（S）：SELECT * FROM table_name WHERE ... LOCK IN SHARE MODE
   　排他锁（X）：SELECT * FROM table_name WHERE ... FOR UPDATE
 
-  乐观锁
+  乐观锁--基于数据版本（Version）记录机制实现
   a. 先执行select操作查询当前数据的数据版本号,比如当前数据版本号是26：
   select id, resource, state,version from t_resource  where state=1 and id=5780;
   b. 执行更新操作：
   update t_resoure set state=2, version=27, update_time=now() where resource=xxxxxx and state=1 and version=26
 
-  排它锁
+  排它锁（悲观锁）
   start transaction;
   select * from user where userId = 1 for update;
   update user set userAge = 100 where userId = 1;

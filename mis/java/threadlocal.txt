@@ -1,0 +1,54 @@
+-----------------------------------------------------------------------------------------------------------------------------------
+ThreadLocal是Thread的局部变量，线程独享（变量副本），以空间换时间
+1.ThreadLocal类中有一个Map，用于存储每一个线程的变量副本，Map中元素的键为ThreadLocal对象，而值对应线程的变量副本
+2.ThreadLocalMap内部Entry中key使用的是对ThreadLocal对象的弱引用,避免内存泄露.
+	线程销毁后，如果是强引用，那么即使其他地方没有对ThreadLocal对象的引用，ThreadLocalMap中的ThreadLocal对象还是不会被回收
+	如果是弱引用则这时候ThreadLocal引用是会被回收掉的，虽然对于的value还是不能被回收
+	使用ThreadLocal的话，用不好会内存溢出的，最好要配合remove()方法来用
+	tomcat 使用的是线程池，在请求后，线程并不收回，所以ThreadLocal的key也没有被收回，因为key没有被收回，value也不会被收回
+
+Thread 属性：
+ThreadLocal.ThreadLocalMap threadLocals；
+
+class ThreadLocal{
+	static class ThreadLocalMap {
+
+		static class Entry extends WeakReference<ThreadLocal<?>> {
+            /** The value associated with this ThreadLocal. */
+            Object value;
+
+            Entry(ThreadLocal<?> k, Object v) {
+                super(k);
+                value = v;
+            }
+        }
+	}
+	
+	 public T get() {
+        Thread t = Thread.currentThread();
+        ThreadLocalMap map = getMap(t); //t.threadLocals
+        if (map != null) {
+            ThreadLocalMap.Entry e = map.getEntry(this);
+            if (e != null) {
+                T result = (T)e.value;
+                return result;
+            }
+        }
+        return setInitialValue();
+    }
+	
+	public void set(T value) {
+        Thread t = Thread.currentThread();
+        ThreadLocalMap map = getMap(t);
+        if (map != null)
+            map.set(this, value);
+        else
+            createMap(t, value);
+    }
+	
+}
+
+
+
+
+-----------------------------------------------------------------------------------------------------------------------------------
