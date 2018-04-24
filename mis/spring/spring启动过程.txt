@@ -1,15 +1,27 @@
-
+-------------------------------------------------------------------------------------------------------------------------------
 1.首先，对于一个web应用，其部署在web容器中，web容器提供其一个全局的上下文环境，这个上下文就是ServletContext，其为后面的spring IoC容器提供宿主环境；
 
-2.在web.xml中会提供有contextLoaderListener。在web容器启动时，会触发容器初始化事件，此时contextLoaderListener会监听到这个事件，其contextInitialized方法会被调用，在这个方法中，spring会初始化一个启动上下文，这个上下文被称为根上下文，即WebApplicationContext，这是一个接口类，确切的说，其实际的实现类是XmlWebApplicationContext。这个就是spring的IoC容器，其对应的Bean定义的配置由web.xml中的context-param标签指定。在这个IoC容器初始化完毕后，spring以WebApplicationContext.ROOTWEBAPPLICATIONCONTEXTATTRIBUTE为属性Key，将其存储到ServletContext中，便于获取；
+2.在web.xml中会提供有contextLoaderListener。在web容器启动时，会触发容器初始化事件，此时contextLoaderListener会监听到这个事件，
+	其contextInitialized方法会被调用，在这个方法中，spring会初始化一个启动上下文，这个上下文被称为根上下文，即WebApplicationContext，
+	这是一个接口类，确切的说，其实际的实现类是XmlWebApplicationContext。这个就是spring的IoC容器，其对应的Bean定义的配置由web.xml中的context-param标签指定。
+	在这个IoC容器初始化完毕后，spring以WebApplicationContext.ROOTWEBAPPLICATIONCONTEXTATTRIBUTE为属性Key，将其存储到ServletContext中，便于获取；
 
-3.contextLoaderListener监听器初始化完毕后，开始初始化web.xml中配置的Servlet，这个servlet可以配置多个，以最常见的DispatcherServlet为例，这个servlet实际上是一个标准的前端控制器，用以转发、匹配、处理每个servlet请求。DispatcherServlet上下文在初始化的时候会建立自己的IoC上下文，用以持有spring mvc相关的bean。在建立DispatcherServlet自己的IoC上下文时，会利用WebApplicationContext.ROOTWEBAPPLICATIONCONTEXTATTRIBUTE先从ServletContext中获取之前的根上下文(即WebApplicationContext)作为自己上下文的parent上下文。有了这个parent上下文之后，再初始化自己持有的上下文。这个DispatcherServlet初始化自己上下文的工作在其initStrategies方法中可以看到，大概的工作就是初始化处理器映射、视图解析等。这个servlet自己持有的上下文默认实现类也是mlWebApplicationContext。初始化完毕后，spring以与servlet的名字相关(此处不是简单的以servlet名为Key，而是通过一些转换，具体可自行查看源码)的属性为属性Key，也将其存到ServletContext中，以便后续使用。这样每个servlet就持有自己的上下文，即拥有自己独立的bean空间，同时各个servlet共享相同的bean，即根上下文(第2步中初始化的上下文)定义的那些bean。
+3.contextLoaderListener监听器初始化完毕后，开始初始化web.xml中配置的Servlet，这个servlet可以配置多个，以最常见的DispatcherServlet为例，
+	这个servlet实际上是一个标准的前端控制器，用以转发、匹配、处理每个servlet请求。DispatcherServlet上下文在初始化的时候会建立自己的IoC上下文，
+	用以持有spring mvc相关的bean。在建立DispatcherServlet自己的IoC上下文时，
+	会利用WebApplicationContext.ROOTWEBAPPLICATIONCONTEXTATTRIBUTE先从ServletContext中获取之前的根上下文(即WebApplicationContext)作为自己上下文的parent上下文。
+	有了这个parent上下文之后，再初始化自己持有的上下文。这个DispatcherServlet初始化自己上下文的工作在其initStrategies方法中可以看到，大概的工作就是初始化处理器映射、视图解析等。
+	这个servlet自己持有的上下文默认实现类也是mlWebApplicationContext。初始化完毕后，spring以与servlet的名字相关(此处不是简单的以servlet名为Key，而是通过一些转换，具体可自行查看源码)的属性为属性Key，
+	也将其存到ServletContext中，以便后续使用。这样每个servlet就持有自己的上下文，即拥有自己独立的bean空间，同时各个servlet共享相同的bean，即根上下文(第2步中初始化的上下文)定义的那些bean。
+-------------------------------------------------------------------------------------------------------------------------------
 
-每个DispatchServlet会有一个自己的上下文，称为子上下文，它也保存在 ServletContext中，key 是"org.springframework.web.servlet.FrameworkServlet.CONTEXT"+Servlet名称。当一 个Request对象产生时，会把这个子上下文对象（WebApplicationContext）保存在Request对象中，key是 DispatcherServlet.class.getName() + ".CONTEXT"。
+每个DispatchServlet会有一个自己的上下文，称为子上下文，它也保存在 ServletContext中，key 是"org.springframework.web.servlet.FrameworkServlet.CONTEXT"+Servlet名称。
+	当一 个Request对象产生时，会把这个子上下文对象（WebApplicationContext）保存在Request对象中，key是 DispatcherServlet.class.getName() + ".CONTEXT"。
 
 可以使用工具类取出上下文对象：RequestContextUtils.getWebApplicationContext(request);
 子上下文可以访问父上下文中的bean，但是父上下文不可以访问子上下文中的bean。
 
+-------------------------------------------------------------------------------------------------------------------------------
 父上下文使用与否
 
 方案一，传统型：
@@ -20,7 +32,39 @@
 当然，做为“传统型”方案，也没有必要这要做。
  
 方案二，激进型：
-Java世界的“面向接口编程”的思想是正确的，但在增删改查为主业务的系统里，Dao层接口，Dao层实现类，Service层接口，Service层实现类，Action父类，Action。再加上众多的O(vo\po\bo)和jsp页面。写一个小功能 7、8个类就写出来了。 开发者说我就是想接点私活儿，和PHP，ASP抢抢饭碗，但我又是Java程序员。最好的结果是大项目能做好，小项目能做快。所以“激进型”方案就出现了-----没有接口、没有Service层、还可以没有众多的O(vo\po\bo)。那没有Service层事务控制在哪一层？只好上升的Action层。
+Java世界的“面向接口编程”的思想是正确的，但在增删改查为主业务的系统里，Dao层接口，Dao层实现类，Service层接口，Service层实现类，Action父类，Action。
+	再加上众多的O(vo\po\bo)和jsp页面。写一个小功能 7、8个类就写出来了。 开发者说我就是想接点私活儿，和PHP，ASP抢抢饭碗，但我又是Java程序员。
+	最好的结果是大项目能做好，小项目能做快。所以“激进型”方案就出现了-----没有接口、没有Service层、还可以没有众多的O(vo\po\bo)。
+	那没有Service层事务控制在哪一层？只好上升的Action层。
 本文不想说这是不是正确的思想，我想说的是Spring不会限制你这样做。
 由于有了父子上下文，你将无法实现这一目标。解决方案是只使用子上下文容器，不要父上下文容器 。所以数据源、服务层、DAO层、事务的Bean、Action的Bean都放在子上下文容器中。就可以实现了，事务（注解事务）就正常工作了。这样才够激进。
 总结：不使用listener监听器来加载spring的配置文件，只使用DispatcherServlet来加载spring的配置，不要父子上下文，只使用一个DispatcherServlet，事情就简单了，什么麻烦事儿也没有了。
+
+-------------------------------------------------------------------------------------------------------------------------------
+
+Spring中循环依赖场景有： 
+（1）构造器的循环依赖 
+（2）field属性的循环依赖。 
+6.2 如何检测循环依赖 
+检测循环依赖相对比较容易，Bean在创建的时候可以给该Bean打标，如果递归调用回来发现正在创建中的话，即说明了循环依赖了。
+
+-------------------------------------------------------------------------------------------------------------------------------
+wac.refresh();  
+//做一些准备工作，如记录开始时间，输出日志
+prepareRefresh()
+
+核心，其中完成了配置文件的加载、解析、注册
+ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory();
+	1.refreshBeanFactory()  //会创建一个DefaultListableBeanFactory实例
+	2.loadBeanDefinitions(beanFactory); XmlBeanDefinitionReader
+	
+	 DefaultListableBeanFactory
+	Spring会将class信息封装成BeanDefinition，然后再放进DefaultListableBeanFactory的beanDefinitionMap中
+	XML读取器XmlDefinitionReader
+
+1.通过继承自AbstractBeanDefinitionReader中的方法，来使用ResourceLoader将资源文件路径转换为对应的Resource文件。
+
+2.通过DocumentLoader对Resource文件进行转换，将Resource文件转换为Document文件。
+
+3.通过实现接口BeanDefinitionDocumentReader对document进行解析，并使用BeanDefinitionParserDelegate进行解析	
+
