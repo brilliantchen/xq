@@ -13,6 +13,9 @@ CAS Ö¸ÁîÖ®Ç°·µ»Ø¸ÃÎ»ÖÃµÄÖµ¡£CAS ÓÐÐ§µØËµÃ÷ÁË¡°ÎÒÈÏÎªÎ»ÖÃ V Ó¦¸Ã°üº¬Öµ A£»Èç¹û°üº
 5£©LockÖ»ÊÊÓÃÓë´úÂë¿éËø£¬¶øsynchronized ¶ÔÏóÖ®¼äµÄ»¥³â¹ØÏµ£»
   £©¿É¶¨Ê±µÄ¡¢¿ÉÂÖÑ¯µÄÓë¿ÉÖÐ¶ÏµÄËø»ñÈ¡²Ù×÷
   £©¹«Æ½¶ÓÁÐ»ò·Ç¿é½á¹¹µÄËø
+  
+  ÔÚ×ÊÔ´¾ºÕù²»ÊÇºÜ¼¤ÁÒµÄÇé¿öÏÂ£¬SynchronizedµÄÐÔÄÜÒªÓÅÓÚReetrantLock£¬
+  µ«ÊÇÔÚ×ÊÔ´¾ºÕùºÜ¼¤ÁÒµÄÇé¿öÏÂ£¬SynchronizedµÄÐÔÄÜ»áÏÂ½µ¼¸Ê®±¶£¬µ«ÊÇReetrantLockµÄÐÔÄÜÄÜÎ¬³Ö³£Ì¬£»
 -----------------------------------------------------------------------------------------------------------------------------------
 public abstract void lock();
 
