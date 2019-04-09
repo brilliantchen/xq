@@ -8,5 +8,7 @@ public class SortUntil {
 		a[i] = a[j];
 		a[j] = tmp;
 	}
+
+	int a =1;
 	
 }
