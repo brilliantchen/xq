@@ -9,6 +9,7 @@ public class SortUntil {
 		a[j] = tmp;
 	}
 
-	int a =1;
+	int a =2;
+	int c=1;
 	
 }
